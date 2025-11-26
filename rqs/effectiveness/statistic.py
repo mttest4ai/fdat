@@ -124,7 +124,7 @@ def compare_result_to_csv(result, csv_path, wtl_csv_path):
 
 def stats_results_to_csv(baseline_statis_results, fdat_statis_result, dataset ,csv_path):
     pass_titles = baseline_statis_results.keys()
-    models = ["incoder-1B", "codegen-2B", "codegen2-1B", "santacoder"]
+    models = ["incoder-1B", "codegen-2B", "codegen2-1B", "santacoder", "llama3-1b", "chatgpt"]
     field_names = ["methods"] + [f"{pass_title}_{model}" for model in models for pass_title in pass_titles]
     baselines = ["base", "insert_line", "comment", "output_mutation", "output_v_mutation"]
     mutants = ["mutant_3", "mutant_2", "mutant_1"]
@@ -143,7 +143,8 @@ def stats_results_to_csv(baseline_statis_results, fdat_statis_result, dataset ,c
                         base_results[row_key] = pass_k_model
                     # 两位百分数，体现出变化率
                     change_rate = round((pass_k_model - base_results[row_key]) / base_results[row_key] * 100, 2)
-                    row[row_key] = f"{pass_k_model:.10g} ({change_rate:.2f}%)"
+                    # row[row_key] = f"{pass_k_model:.10g} ({change_rate:.2f}%)"
+                    row[row_key]= row[row_key] = f"{pass_k_model:.10g}"
             writer.writerow(row)
         for mutant in mutants:
             row = {"methods": mutant_to_method[mutant]}
@@ -152,14 +153,15 @@ def stats_results_to_csv(baseline_statis_results, fdat_statis_result, dataset ,c
                     pass_k_model = round(fdat_statis_result[pass_title][mutant][dataset][f"passat10_{model}"], 2)
                     row_key = f"{pass_title}_{model}"
                     change_rate = round((pass_k_model - base_results[row_key]) / base_results[row_key] * 100, 2)
-                    row[row_key] = f"{pass_k_model:.10g} ({change_rate:.2f}%)"
+                    # row[row_key] = f"{pass_k_model:.10g} ({change_rate:.2f}%)"
+                    row[row_key]= row[row_key] = f"{pass_k_model:.10g}"
             writer.writerow(row)
 
             
 
 
 def main():
-    fdat_data = read_json("./dataset/pass_k_statistics_fdat.json")
+    fdat_data = read_json("./dataset/pass_k_statistics_combmt.json")
     baselines_data = read_json("./dataset/pass_k_statistics_baselines.json")
     fdat_mutants = ["mutant_3", "mutant_2", "mutant_1"]
     mutant_to_method = {"mutant_1": "SID", "mutant_2": "MRD", "mutant_3": "AID"}
